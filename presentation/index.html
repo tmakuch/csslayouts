@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>CSS Layouts</title>
+
+		<meta name="author" content="Tadeusz Makuch">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/night.css" id="theme">
+        <style type="text/css">
+            h1, h2, h3, h4, h5, h6 {
+                font-family: Calibri !important;
+                font-weight: 600 !important;
+            }
+            .two-cols {
+                display: flex;
+                flex-flow: row nowrap;
+                margin: 0 10% !important;
+            }
+            .two-cols > * {
+                flex: 1 1 50%;
+            }
+            .before-after > * {
+                margin-top: 10px;
+                position: relative;
+            }
+            .before-after > :first-child:before {
+                content: 'LESS:';
+                position: absolute;
+                opacity: .6;
+                font-size: .7em;
+                top: -2em;
+            }
+            .before-after > :not(:first-child):last-child:before {
+                content: 'Wynikowy CSS:';
+                position: absolute;
+                opacity: .6;
+                font-size: .7em;
+                top: -2em;
+            }
+
+            .hex {
+                position: relative;
+                width: 100px;
+                height: 57.74px;
+                background-color: white;
+                margin: 28.87px auto !important;
+            }
+
+            .hex:before,
+            .hex:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                width: 0;
+                border-left: 50px solid transparent;
+                border-right: 50px solid transparent;
+            }
+
+            .hex:before {
+                bottom: 100%;
+                border-bottom: 28.87px solid white;
+            }
+
+            .hex:after {
+                top: 100%;
+                width: 0;
+                border-top: 28.87px solid white;
+            }
+        </style>
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+		<script>
+			if( window.location.search.match( /print-pdf/gi ) ) {
+				var link = document.createElement( 'link' );
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = 'css/print/pdf.css';
+				document.getElementsByTagName( 'head' )[0].appendChild( link );
+			}
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+                <section class="stack">
+                    <section>
+                        <h1>CSS Layouts</h1>
+                        <p><b>GFT Academy</b></p>
+                        <p><b>Tadeusz Makuch</b><br />tadeusz.makuch@gft.com</p>
+                    </section>
+
+                    <section>
+                        <a href="https://github.com/tmakuch/csslayouts">https://github.com/tmakuch/csslayouts</a>
+                    </section>
+
+                    <section>
+                        <h2>Agenda</h2>
+                        <ul>
+                            <li>Wprowadzenie do preprocessora LESS,</li>
+                            <li>Metodyka BEM,</li>
+                            <li>Pseudoselektory, pseudoelementy i media queries,</li>
+                            <li>Pizza,</li>
+                            <li>CSS Flexbox,</li>
+                            <li>CSS Grid</li>
+                        </ul>
+                    </section>
+                </section>
+
+                <section class="stack">
+                    <section>
+                        <h1>LESS</h1>
+                    </section>
+                    <section>
+                        <ul>
+                            <li>Prekompilator,</li>
+                            <li>Lekki i oparty na JavaScript’cie,</li>
+                            <li>CSS z dodatkami</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Zagnieżdżanie</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.content-body {
+    ...
+    h1 {
+        ...
+    }
+    > * {
+        ...
+    }
+}</code></pre>
+                            <pre><code>.content-body {
+  ...
+}
+.content-body h1 {
+  ...
+}
+.content-body > * {
+  ...
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Zagnieżdżanie i selektor rodzica</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.content {
+    &-header {
+        ...
+    }
+    &-body {
+        ...   
+        &&--large {
+            ...
+        }
+    }
+}</code></pre>
+                            <pre><code>.content-header {
+    ...
+}
+.content-body {
+    ...
+}
+.content-body.content-body--large {
+    ...
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Problemy z selektorem rodzica</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.content, .header {
+    & &-body {
+        color:red;
+        &&--large {
+            color:red;
+        }
+    }
+}</code></pre>
+                            <pre><code>.content .content-body,
+.content .header-body,
+.header .content-body,
+.header .header-body {
+  color: red;
+}
+.content .content-body.content .content-body--large,
+.content .content-body.content .header-body--large,
+.content .content-body.header .content-body--large,
+.content .content-body.header .header-body--large,
+.content .header-body.content .content-body--large,
+.content .header-body.content .header-body--large,
+.content .header-body.header .content-body--large,
+.content .header-body.header .header-body--large,
+.header .content-body.content .content-body--large,
+.header .content-body.content .header-body--large,
+.header .content-body.header .content-body--large,
+.header .content-body.header .header-body--large,
+.header .header-body.content .content-body--large,
+.header .header-body.content .header-body--large,
+.header .header-body.header .content-body--large,
+.header .header-body.header .header-body--large {
+  color: red;
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Problemy z selektorem rodzica</h2>
+                        <div class="before-after">
+                            <pre><code>.content {
+    .content-body {
+        &&--large {
+            color:red;
+        }
+    }
+}</code></pre>
+                            <pre style="margin-top: 50px;"><code>.content .content-body.content .content-body--large {
+  color: red;
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Zagnieżdżanie i media queries</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.content {
+    @media screen {
+        color: #dd0000;
+    }
+    @media print {
+        color: red;
+    }
+}</code></pre>
+                            <pre><code>@media screen {
+    .content {
+        color: #dd0000;
+    }
+}
+@media print {
+    .content {
+        color: red;
+    }
+}
+</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 1</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać własne style.</p>
+                        <p><a href="/code/exercise1" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Mixiny</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.red() {
+    color: red;
+}
+.my-message {
+    .red;
+}
+.error {
+    .red();
+}</code></pre>
+                        <pre><code>.my-message {
+    color: red;
+}
+.error {
+    color: red;
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Mixiny a isniejące klasy</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.red() {
+    color: red;
+}
+.green-background {
+    background-color: green;
+}
+.my-message {
+    .red;
+    .green-background();
+}</code></pre>
+                            <pre><code>.green-background {
+    color: green;
+}
+.my-message {
+    color: red;
+    background-color: green;
+}
+</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Mixiny w przestrzeniach nazw</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.theme() {
+    .red() {
+        color: red;
+    }
+    .green-background {
+        background-color: green;
+    }
+}
+.my-message {
+    .theme.red;
+    .theme.green-background;
+}</code></pre>
+                            <pre><code>.my-message {
+    color: red;
+    background-color: green;
+}
+</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Mixiny z argumentami</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.color(@color) {
+    color: @color;
+}
+.background(@color) {
+    background-color: @color;
+}
+.my-message {
+    .color(red);
+    .background(green);
+}</code></pre>
+                            <pre><code>.my-message {
+    color: red;
+    background-color: green;
+}
+</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Mixiny z domyślnymi argumentami</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.color(@color: red) {
+    color: @color;
+}
+.background(@color: green) {
+    background-color: @color;
+}
+.my-message {
+    .color(pink);
+    .background;
+}</code></pre>
+                            <pre><code>.my-message {
+    color: pink;
+    background-color: green;
+}
+</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Mixiny - przesilenia</h2>
+                        <div class="before-after two-cols">
+                            <pre><code>.colors(@color) {
+    color: @color;
+}
+.colors(@color, @background) {
+    color: @color;
+    background-color: @background;
+}
+.my-message {
+    .color(red);
+}</code></pre>
+                            <pre><code>.my-message {
+    color: red;
+}</code></pre>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 2</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style z wykorzystaniem mixinów.</p>
+                        <p>Nagłowek i stopka powinna mieć takie same style, paragrafy powinny wyglądać tak samo, natomiast ważne elementy (ważny paragraf i stopka) powinny mieć takie samo wyróżnienie. </p>
+                        <p><a href="/code/exercise2" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Co więcej daje LESS?</h2>
+                        <ul>
+                            <li>@import</li>
+                            <li>Zmienne i ich zasięg</li>
+                            <li>Operacje</li>
+                            <li>Wbudowane funkcje</li>
+                        </ul>
+                    </section>
+                </section>
+                <section class="stack">
+                    <section>
+                        <h1>BEM</h1>
+                    </section>
+                    <section>
+                        <ul>
+                            <li>To co jest w programowaniu trudne – nazywanie rzeczy</li>
+                            <li>Niepowiązana z żadnym preprocessorem</li>
+                            <li>Nie porusza kwestii przechowywania styli w naszej aplikacji</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>BEM kiedyś a dziś</h2>
+                        <ul>
+                            <li>Odpowiedź na brak modularyzacji / wsparcia komponentów,</li>
+                            <li>Strukturyzacja kody HTML i CSS,</li>
+                            <li>Traktuje kod CSS, jak dowolny inny język programowania – wymusza dobre praktyki</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <p>BLOCK__ELEMENT--MODIFIER</p>
+                        <ul>
+                            <li>.body__content</li>
+                            <li>.message--highlighted</li>
+                            <li>.message__body--truncated</li>
+                            <li>.child-component__header-text--is-visible</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <pre><code><h1 class="my-list_header">...</h1>
+<ul class="my-list_content">
+    <li class="my-list__content-item">...</li>
+    <li class="my-list__content-item my-card">
+        <span class="my-card__content">...</span>
+    </li>
+</ul></code></pre>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 3</h2>
+                        <p>Do przygotowanej struktury html dodać klasy w wykorzystując metodykę BEM lub dostosować już istniejące</p>
+                        <p><a href="/code/exercise3" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Dobre praktyki - Zasada Jednej Odpowiedzialności</h2>
+                        <pre><code>
+<button class="green-button">Success!</button>
+
+<button class="button button--success">Success!</button>
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Dobre praktyki - Zasada Otwarte/Zamknięte</h2>
+                        <pre><code>
+<button class="green-button">Success!</button>
+
+<button class="button button--success button--under-spacer">
+    Success!
+</button>
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>BEM i LESS</h2>
+                        <pre><code>.body {
+    &__header {
+        ...
+    }
+    &__content {
+        ...
+        &--highlighted {
+            ...
+        }
+    }
+}</code></pre>
+                    </section>
+                    <section>
+                        <h2>BEM - łączenie komponentów</h2>
+                        <pre><code><li class="my-list__content-item my-card">
+    <span class="my-card__content">...</span>
+</li>
+
+<li class="my-list__content-item">
+    <div class=" my-card">
+        <span class="my-card__content">...</span>
+    </div>
+</li></code></pre>
+                    </section>
+                    <section>
+                        <h2>BEM + SMACSS - łączenie komponentów</h2>
+                        <ul>
+                            <li>Zbiór Layout - osobne BEM'owe style</li>
+                            <li>Zbiór Module - zebrane reguł blocków i elementów</li>
+                            <li>Zbiór Rules - zebrane reguły modyfikatorów</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>BEM + SMACSS - łączenie komponentów</h2>
+                        <pre><code><li class="layout-list__content-item my-card highlighted">
+    <span class="my-card__content">...</span>
+</li>
+
+//layout.css
+.layout-list__content-item { ... }
+//card-module.css
+.my-card { ... }
+//states.css
+.highlighted { ... }</code></pre>
+                    </section>
+                    <section>
+                        <h2>BEM + SMACSS + LESS - łączenie komponentów</h2>
+                        <pre><code><li class="my-list__content-item my-card my-card--highlighted">
+    <span class="my-card__content">...</span>
+</li>
+
+//list.less
+@import 'layout';
+.my-list__content-item { .layout.list.item; }
+//card.less
+@import 'states';
+.my-card--highlighted { .states.highlighted; }</code></pre>
+                    </section>
+                </section>
+                <section class="stack">
+                    <section>
+                        <h1>Pseudoelementy, pseudoklasy i zapytania @media</h1>
+                    </section>
+                    <section>
+                        <h2>Pseudoelementy</h2>
+                        <ul>
+                            <li>Są dynamicznie dodawanie przez przeglądarkę,</li>
+                            <li>Pozwalają dodatkowo stylować nasze komponenty,</li>
+                            <li>Najbardziej popularne to:<ul>
+                                <li>::after</li>
+                                <li>::before</li>
+                                <li>::first-letter</li>
+                                <li>::first-line</li>
+                                <li>::selection</li>
+                            </ul></li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>::before, ::after</h2>
+                        <ul>
+                            <li>Pozwala na dodanie dwóch dodatkowych bloków do danego elementu,</li>
+                            <li>Najważniejsza właściwość to 'content'</li>
+                        </ul>
+                        <p style="padding-bottom: 25px">Poniżej jest jedynie &lt;div class="hex"&gt;&lt;/div&gt;:</p>
+                        <div class="hex"></div>
+                    </section>
+                    <section>
+                        <h2>::after a float</h2>
+                        <ul>
+                            <li>::after był często wykorzystywany do naprawiania ostylowanych elementów,</li>
+                            <li>Dziś stracił na tej wartości dzięki możliwości użycia np. flexbox’a,</li>
+                            <li>Każdy element wybity z layout’u dzięki float’owi powinien zostać zakończony elementem z clear:both</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>::first-letter, ::first-line, ::selection</h2>
+                        <ul>
+                            <li>Pozwala wystylować odpowiednio tekst w zależności od jego położenia lub stanu zaznaczenia,</li>
+                            <li>Nie staje się nowym blokiem,</li>
+                            <li>Wspiera jedynie podzbiór dostępnych styli</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 4</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style.</p>
+                        <ul>
+                            <li>Pod nagłowkiem i nad stopką powinna znajdować się przerywana linia z 30px odstępami od krawędzi,</li>
+                            <li>Paragrafy powinny zaczynać i kończyć się cudzysłowiami,</li>
+                            <li>Pierwsza litera paragrafów powinna być wielka,</li>
+                            <li>Zaznaczenie w ważnych paragrafów powinny być innego koloru niż domyślne zaznaczenie</li>
+                        </ul>
+                        <p><a href="/code/exercise4" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Pseudoklasy</h2>
+                        <ul>
+                            <li>Odpowiadają za stan lub pozycję elementów,</li>
+                            <li>Nie dodają żadnych elementów HTML oraz nie wymagają dodania żadnych klas,</li>
+                            <li>Pseudo klasy można podzielić na kilka umownych grup dotyczących:<ul>
+                                <li>Stanu,</li>
+                                <li>Pozycji,</li>
+                                <li>Formularzy</li>
+                            </ul></li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Pseudoklasy stanu</h2>
+                        <ul>
+                            <li>:active</li>
+                            <li>:checked</li>
+                            <li>:hover</li>
+                            <li>:link</li>
+                            <li>:visited</li>
+                            <li>:disabled</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Pseudoklasy pozycji</h2>
+                        <ul>
+                            <li>:first-child</li>
+                            <li>:first-of-type</li>
+                            <li>:only-child</li>
+                            <li>:only-of-type</li>
+                            <li>:last-child</li>
+                            <li>:last-of-type</li>
+                            <li>:nth-child()</li>
+                            <li>:nth-of-type()</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Pseudoklasy formularzy</h2>
+                        <ul>
+                            <li>:empty</li>
+                            <li>:enabled</li>
+                            <li>:focus</li>
+                            <li>:invalid</li>
+                            <li>:required</li>
+                            <li>:optional</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Pseudoselektor :not()</h2>
+                        <ul>
+                            <li>Pozwala dodać negację na dany element,</li>
+                            <li>Jako argument przyjmuje selektor prosty,</li>
+                            <li>Należy uważać na pułapkę hierachii elementów w selektorach bez bezpośredniego zawierania</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Zapytania @media</h2>
+                        <ul>
+                            <li>@media [not|only] typ and|or (reguły) { css }</li>
+                            <li>Pozwala na określanie kiedy w jakich przypadkach dany styl ma być użyty,</li>
+                            <li>Opakowuje poszczególne selektory css lub całe arkusze styli</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>@media - typy</h2>
+                        <ul>
+                            <li>all</li>
+                            <li>print</li>
+                            <li>screen</li>
+                            <li>speech</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>@media - reguły</h2>
+                        <ul>
+                            <li>[max-|min-]height</li>
+                            <li>[max-|min-]width</li>
+                            <li>[max-|min-]aspect-ratio</li>
+                            <li>[max-|min-]resolution</li>
+                            <li>orientation</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>@media - and, or</h2>
+                        <ul>
+                            <li>@media screen and (max-width: 499px) { }</li>
+                            <li>@media (min-width: 500px) and (max-width: 1365px) { ... }</li>
+                            <li>@media (min-width: 1366px), (orientation: landscape) and (min-width: 800px) { ... }</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 5</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style.</p>
+                        <ul>
+                            <li>Link po najechaniu myszką powinien być zielony.</li>
+                            <li>Odwiedzony link powinien być przekreślony i nie powinien reagować na najechanie myszką.</li>
+                            <li>Pierwszy paragraf powinien być zielony.</li>
+                            <li>Ostatni paragraf powinien być przekreślony.</li>
+                            <li>Jedyny paragraf w grupie powinien być tylko zielony.</li>
+                            <li>Wymagane pole powinno mieć zieloną obramówkę.</li>
+                            <li>Błędne pole powinno mieć czerwone obwódkę. Jeśli nie jest wymagane powinno mieć także czerwone tło.</li>
+                        </ul>
+                        <p><a href="/code/exercise5" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                </section>
+                <section class="stack">
+                    <style type="text/css">
+                        .green-block { background-color: green; }
+                        .red-block { background-color: red; }
+                    </style>
+                    <section>
+                        <h1>Flexbox</h1>
+                    </section>
+                    <section>
+                        <ul>
+                            <li>Rozmieszczać elementy pionowo lub poziomo,</li>
+                            <li>Elastycznie dostosowuje się do dostępnego miejsca,</li>
+                            <li>Pozwala wymusić rozmieszczenie w jędnym wierszu lub kolumnie</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Can I Use (.com table)</h2>
+                        <img src="img/flexbox.png"/>
+                    </section>
+                    <section>
+                        <h2>Rozmieszczenie elementów w jednym wierszu</h2>
+                        <pre><code>.container {
+    display: flex;
+    flex-flow: row nowrap;
+
+    &__item {
+        flex: 0 1 auto;
+        &--expandable {
+            flex-grow: 1;
+        }
+        &--expander {
+            flex-grow: 5;
+        }
+    }
+}</code></pre>
+                        <style type="text/css">
+                            .flex-example--1.container {
+                                display: flex;
+                                flex-flow: row nowrap;
+                                margin: 10px 10%;
+                            }
+                            .flex-example--1 .container__item {
+                                flex: 0 1 auto;
+                            }
+                            .flex-example--1 .container__item--expandable {
+                                flex-grow: 1;
+                            }
+                            .flex-example--1 .container__item--expander {
+                                flex-grow: 5;
+                            }
+                        </style>
+                        <div class="flex-example--1 container">
+                            <div class="container__item container__item--expandable green-block">Tytuł</div>
+                            <button class="container__item red-block">Przycisk</button>
+                            <div class="container__item container__item--expander"></div>
+                            <div class="container__item red-block">X</div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Rozmieszczenie elementów w wielu wierszach</h2>
+                        <pre><code>.container {
+    display: flex;
+    flex-flow: row wrap;
+
+    &__item {
+        flex: 0 1 auto;
+        &--expandable {
+            flex-grow: 1;
+        }
+    }
+}</code></pre>
+                        <style type="text/css">
+                            .flex-example--2.container {
+                                display: flex;
+                                flex-flow: row wrap;
+                                margin: 10px 10%;
+                            }
+                            .flex-example--2 .container__item {
+                                width: 100px;
+                                height: 5px;
+                                margin: 5px;
+                                background-color: green;
+                                flex: 0 1 auto;
+                            }
+                            .flex-example--2 .container__item--expandable {
+                                flex-grow: 1;
+                            }
+                        </style>
+                        <div class="flex-example--2 container">
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item"></div>
+                            <div class="container__item container__item--expandable"></div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Właściwości kontenera</h2>
+                        <ul>
+                            <li>display: flex | inline-flex;</li>
+                            <li>flex-direction: row | row-reverse | column | column-reverse;</li>
+                            <li>flex-wrap: nowrap | wrap | wrap-reverse;</li>
+                            <li>flex-flow: flex-direction flex-wrap</li>
+                            <li></li>
+                            <li>align-content: flex-start | flex-end | center | space-between | space-around | stretch;</li>
+                            <li>align-items: flex-start | flex-end | center | baseline | stretch;</li>
+                            <li>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Właściwości elementów</h2>
+                        <ul>
+                            <li>flex-grow: liczba;</li>
+                            <li>flex-shrink: liczba;</li>
+                            <li>flex-basis: długość | auto;</li>
+                            <li>flex: flex-grow flex-shrink flex-basis</li>
+                            <li></li>
+                            <li>align-self: auto | flex-start | flex-end | center | baseline | stretch;</li>
+                            <li>order: liczba;</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 6</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style.</p>
+                        <ul>
+                            <li>Nagłowek powinien mieć 300px,</li>
+                            <li>Zawartość powinna dostosowywać się do dostępnego miejsca,</li>
+                            <li>Stopka powinna zajmować tyle miejsca ile potrzebuje</li>
+                        </ul>
+                        <p><a href="/code/exercise6" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Obliczanie dostępnego miejsca</h2>
+                        <ul>
+                            <li>Przeglądarka podczas obliczania wymaganych zmian robi porównuje dostępne miejsce do szerokości wszystkich elementów,</li>
+                            <li>flex-basis pozwala manipulować jaka wartość jest wykorzystywana podczas obliczeń</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Flexbox - do czego się nie nadaje</h2>
+                        <ul>
+                            <li>Wiele wierszy o różnym rozmieszczeniu elementów,</li>
+                            <li>Kontenery z elementami, które mają się rozciągać na kilka wierczy/kolumn,</li>
+                            <li>Bonus - proste przypadki gdzie width/height: calc(...) by wystarczył</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 7</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style.</p>
+                        <p><a href="/code/exercise7" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                </section>
+                <section class="stack">
+                    <section>
+                        <h1>Grid</h1>
+                    </section>
+                    <section>
+                        <ul>
+                            <li>Nie wiąże silnie danego elementu z danym miejscem,</li>
+                            <li>Nie wymaga zmiany struktury dokumentu do zmiany layout'u,</li>
+                            <li>Bardziej naturalne rozmieszczanie elementów na stronie</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Jak uzyskać taki layout?</h2>
+                        <style type="text/css">
+                            .grid-example--1.container {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr 1fr;
+                                grid-template-rows: 1fr 1fr;
+                                grid-template-areas:
+                                    "left top-right-1 top-right-2"
+                                    "left bottom-right-1 bottom-right-2";
+                                grid-column-gap: 10px;
+                                grid-row-gap: 10px;
+
+                                height: 200px;
+                                margin: 0 10%;
+                            }
+                            .grid-example--1 .box {
+                                background-color: green;
+                                height: 100%;
+                                width: 100%;
+                            }
+                            .grid-example--1 .box--left {
+                                grid-area: left;
+                            }
+                            .grid-example--1 .box--top-right-1 {
+                                grid-area: top-right-1;
+                            }
+                            .grid-example--1 .box--top-right-2 {
+                                grid-area: top-right-2;
+                            }
+                            .grid-example--1 .box--bottom-right-1 {
+                                grid-area: bottom-right-1;
+                            }
+                            .grid-example--1 .box--bottom-right-2 {
+                                grid-area: bottom-right-2;
+                            }
+                        </style>
+                        <div class="grid-example--1 container">
+                            <div class="box box--left"></div>
+                            <div class="box box--top-right-1"></div>
+                            <div class="box box--top-right-2"></div>
+                            <div class="box box--bottom-right-1"></div>
+                            <div class="box box--bottom-right-2"></div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Rozwiązanie - CSS Flexbox (layout-in)</h2>
+                        <style type="text/css">
+                            .flex-example--3.container, .flex-example--3 .container {
+                                display: flex;
+                                flex-flow: row nowrap;
+                                flex: 1 1 auto;
+                                padding: 10px;
+                                margin: 10px;
+                                border: 3px dashed;
+                            }
+                            .flex-example--3.container {
+                                margin-left: 10%;
+                                margin-right: 10%;
+                            }
+                            .flex-example--3 .container--vertical {
+                                flex-direction: column;
+                            }
+                            .flex-example--3 .container--left {
+                                flex: 1 1 0;
+                            }
+                            .flex-example--3 .container--right {
+                                flex: 2 2 0;
+                            }
+                            .flex-example--3 .box {
+                                min-height: 100px;
+                                width: 100%;
+                                margin: 10px;
+                                background-color: green;
+                            }
+                        </style>
+                        <div class="flex-example--3 container">
+                            <div class="container container--left">
+                                <div class="box"></div>
+                            </div>
+                            <div class="container container--vertical container--right">
+                                <div class="container">
+                                    <div class="box"></div>
+                                    <div class="box"></div>
+                                </div>
+                                <div class="container">
+                                    <div class="box"></div>
+                                    <div class="box"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Rozwiązanie - CSS Flexbox (layout-in)</h2>
+                        <pre><code><div class="container">
+    <div class="container container--left">
+        <div class="box"></div>
+    </div>
+    <div class="container container--vertical container--right">
+        <div class="container">
+            <div class="box"></div>
+            <div class="box"></div>
+        </div>
+        <div class="container">
+            <div class="box"></div>
+            <div class="box"></div>
+        </div>
+    </div>
+</div></code></pre>
+                    </section>
+                    <section>
+                        <h2>Rozwiązanie - CSS GRID (layout-in)</h2>
+                        <div class="container">
+                            <div class="box box--left"></div>
+                            <div class="box box--top-right-1"></div>
+                            <div class="box box--top-right-2"></div>
+                            <div class="box box--bottom-right-1"></div>
+                            <div class="box box--bottom-right-2"></div>
+                        </div>
+                        <pre><code><div class="grid-example--1 container">
+    <div class="box box--left"></div>
+    <div class="box box--top-right-1"></div>
+    <div class="box box--top-right-2"></div>
+    <div class="box box--bottom-right-1"></div>
+    <div class="box box--bottom-right-2"></div>
+</div></code></pre>
+                    </section>
+                    <section>
+                        <h2>Can I Use (.com table)</h2>
+                        <img src="img/grid.png"/>
+                    </section>
+                    <section>
+                        <h2>Właściwości kontenera</h2>
+                        <ul>
+                            <li>display: grid | inline-grid | subgrid;</li>
+                            <li>grid-template-columns: [nazwa] szerokość-kolumny [nazwa] szerokość-kolumny ...</li>
+                            <li>grid-template-rows: [nazwa] wysokość-wiersza [nazwa] wysokość-wiersza ...</li>
+                            <li>grid-template: grid-template-rows / grid-template-columns</li>
+                            <li>grid-template-areas: "nazwa | .  nazwa | . " "...</li>
+                            <li></li>
+                            <li>grid-auto-columns: szerokość_kolumn</li>
+                            <li>grid-auto-rows: wysokość wierszy</li>
+                            <li>grid-auto-flow: row | column | row dense | column dense</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>grid-template-* - przykład</h2>
+                        <pre><code>grid-template: 60px 30px auto 60px / 1fr 2fr;
+grid-template-areas:
+    "header header"
+    "aside content"
+    ". content"
+    "footer footer";</code></pre>
+                        <style type="text/css">
+                            .grid-example--2.container {
+                                display: grid;
+                                margin: 0 10%;
+                                grid-template: 60px 30px auto 60px / 1fr 2fr;
+                                grid-template-areas:
+                                    "header header"
+                                    "aside content"
+                                    ". content"
+                                    "footer footer";
+                            }
+                            .grid-example--2 .header {
+                                grid-area: header;
+                                background-color: rgba(0,0,255, .4)
+                            }
+                            .grid-example--2 .aside {
+                                grid-area: aside;
+                                background-color: rgba(0,255,0, .4)   
+                            }
+                            .grid-example--2 .content {
+                                grid-area: content;
+                                background-color: rgba(255,0,255, .4)   
+                            }
+                            .grid-example--2 .footer {
+                                grid-area: footer;
+                                background-color: rgba(255,255,0, .4)   
+                            }
+                        </style>
+                        <div class="grid-example--2 container">
+                            <div class="header">header</div>
+                            <div class="aside">aside</div>
+                            <div class="content">content<br/>content<br/>content</div>
+                            <div class="footer">footer</div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Właściwości elementów</h2>
+                        <ul>
+                            <li>grid-column: start-line / end-line | start-line / span value;</li>
+                            <li>grid-row: start-line / end-line | start-line / span value;</li>
+                            <li>grid-area: name | row-start / column-start / row-end / column-end;</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>grid-template-* - przykład 2</h2>
+                        <pre><code>.container {
+    display: grid;
+    margin: 0 10%;
+    grid-template-rows: [start] 60px [header-end content-start] 30px [content-stop] auto [content-end footer-start] 60px [end];
+    grid-template-columns: [start] 1fr [one-third] 2fr [end];
+}
+.content {
+    grid-row: content-start / content-end;
+    grid-column: one-third / end;
+    background-color: rgba(255,0,255, .4)   
+}</code></pre>
+                    </section>
+                    <section>
+                        <h2>grid-template-* - przykład 2</h2>
+                        <style type="text/css">
+                            .grid-example--3.container {
+                                display: grid;
+                                margin: 0 10%;
+                                grid-template-rows: [start] 60px [header-end content-start] 30px [content-stop] auto [content-end footer-start] 60px [end];
+                                grid-template-columns: [start] 1fr [one-third] 2fr [end];
+                            }
+                            .grid-example--3 .header {
+                                grid-column: start / span 2;
+                                grid-row: 1 / 2;
+                                background-color: rgba(0,0,255, .4)
+                            }
+                            .grid-example--3 .aside {
+                                background-color: rgba(0,255,0, .4)   
+                            }
+                            .grid-example--3 .content {
+                                grid-row: content-start / content-end;
+                                grid-column: one-third / end;
+                                background-color: rgba(255,0,255, .4)   
+                            }
+                            .grid-example--3 .footer {
+                                grid-row: footer-start / end;
+                                grid-column: start / end;
+                                background-color: rgba(255,255,0, .4)   
+                            }
+                        </style>
+                        <div class="grid-example--3 container">
+                            <div class="header">header</div>
+                            <div class="aside">aside</div>
+                            <div class="content">content<br/>content<br/>content</div>
+                            <div class="footer">footer</div>
+                        </div>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 8</h2>
+                        <p>Do przygotowanej struktury html (z istniejącymy już klasami) dopisać style.</p>
+                        <ul>
+                            <li>Nagłowek 300px na całej szerokości,</li>
+                            <li>Pod nagłowkiem po lewej na 1/3 szerokości notatka o autorze, zajmująca tyle ile potrzebuje miejsca,</li>
+                            <li>Na prawo od notatki o autorze podtytuł o wysokości równej 50px na pozostałą część szerokości,</li>
+                            <li>Pod podtytułem zawartość strony.</li>
+                            <li>Na samym dole na całą szerokość stopka.</li>
+                        </ul>
+                        <p><a href="/code/exercise8and9" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 8</h2>
+                        <img src="img/exe8.png"/>
+                    </section>
+                    <section>
+                        <h2>RWD</h2>
+                        <ul>
+                            <li>Jedna struktura html - przygotowana na ekrany mobilne,</li>
+                            <li>Zapytania @media dodają grid do kontenera i odpowiednio umiejsciawiają elementy,</li>
+                            <li>Kolejne wielkości ekranów to kolejne konfiguracje kontenera</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 9</h2>
+                        <p>Zaktualizować zadanie 8 o zapytanie @media, żeby wspierać 3 widoki - dla telefonu, małych ekranów i dużych.</p>
+                        <p><a href="/code/exercise8and9" target="_blank">Otwórz stronę ćwiczenia.</a></p>
+                    </section>
+                </section>
+                <section class="stack">
+                    <section>
+                        <h2>Słowem podsumowania</h2>
+                        <p>Grid i Flexbox nie powinny być używane zamienie.</p>
+                        <p>Flexbox pozwala na stworzenie layout'u dla elementów w jednym lub więcej wierszy.</p>
+                        <p>Grid pozwala na stworzenie głównego layout'u strony bez tworzenia problematycznych wrapper'ów.</p>
+                    </section>
+                    <section>
+                        <h1>Q/A</h1>
+                    </section>
+                    <section>
+                        <h1>Dzięki za uwagę</h1>
+                    </section>
+                </section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				width: 1366,
+				height: 768,
+
+				theme: 'night', // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
