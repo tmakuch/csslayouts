@@ -190,9 +190,9 @@
                         <div class="before-after two-cols">
                             <pre><code>.content, .header {
     & &-body {
-        color:red;
+        ...
         &&--large {
-            color:red;
+            ...
         }
     }
 }</code></pre>
@@ -200,7 +200,7 @@
 .content .header-body,
 .header .content-body,
 .header .header-body {
-  color: red;
+    ...
 }
 .content .content-body.content .content-body--large,
 .content .content-body.content .header-body--large,
@@ -218,7 +218,7 @@
 .header .header-body.content .header-body--large,
 .header .header-body.header .content-body--large,
 .header .header-body.header .header-body--large {
-  color: red;
+    ...
 }</code></pre>
                         </div>
                     </section>
@@ -228,12 +228,12 @@
                             <pre><code>.content {
     .content-body {
         &&--large {
-            color:red;
+            ...
         }
     }
 }</code></pre>
                             <pre style="margin-top: 50px;"><code>.content .content-body.content .content-body--large {
-  color: red;
+    ...
 }</code></pre>
                         </div>
                     </section>
@@ -300,7 +300,7 @@
     .green-background();
 }</code></pre>
                             <pre><code>.green-background {
-    color: green;
+    background-color: green;
 }
 .my-message {
     color: red;
@@ -421,7 +421,7 @@
                         <ul>
                             <li>Odpowiedź na brak modularyzacji / wsparcia komponentów,</li>
                             <li>Strukturyzacja kody HTML i CSS,</li>
-                            <li>Traktuje kod CSS, jak dowolny inny język programowania – wymusza dobre praktyki</li>
+                            <li>Traktuje kod CSS jak dowolny inny język programowania – wymusza dobre praktyki</li>
                         </ul>
                     </section>
                     <section>
@@ -434,18 +434,13 @@
                         </ul>
                     </section>
                     <section>
-                        <pre><code><h1 class="my-list_header">...</h1>
-<ul class="my-list_content">
+                        <pre><code><h1 class="my-list__header">...</h1>
+<ul class="my-list__content">
     <li class="my-list__content-item">...</li>
     <li class="my-list__content-item my-card">
         <span class="my-card__content">...</span>
     </li>
 </ul></code></pre>
-                    </section>
-                    <section>
-                        <h2>Ćwiczenie 3</h2>
-                        <p>Do przygotowanej struktury html dodać klasy w wykorzystując metodykę BEM lub dostosować już istniejące</p>
-                        <p><a href="/code/exercise3" target="_blank">Otwórz stronę ćwiczenia.</a></p>
                     </section>
                     <section>
                         <h2>Dobre praktyki - Zasada Jednej Odpowiedzialności</h2>
@@ -454,6 +449,11 @@
 
 <button class="button button--success">Success!</button>
                         </code></pre>
+                    </section>
+                    <section>
+                        <h2>Ćwiczenie 3</h2>
+                        <p>Do przygotowanej struktury html dodać klasy w wykorzystując metodykę BEM lub dostosować już istniejące</p>
+                        <p><a href="/code/exercise3" target="_blank">Otwórz stronę ćwiczenia.</a></p>
                     </section>
                     <section>
                         <h2>Dobre praktyki - Zasada Otwarte/Zamknięte</h2>
@@ -486,7 +486,7 @@
 </li>
 
 <li class="my-list__content-item">
-    <div class=" my-card">
+    <div class="my-card">
         <span class="my-card__content">...</span>
     </div>
 </li></code></pre>
@@ -557,7 +557,7 @@
                         <h2>::after a float</h2>
                         <ul>
                             <li>::after był często wykorzystywany do naprawiania ostylowanych elementów,</li>
-                            <li>Dziś stracił na tej wartości dzięki możliwości użycia np. flexbox’a,</li>
+                            <li>Dziś częściej spotyka się flexbox layout do rozmieszczenia elementów,</li>
                             <li>Każdy element wybity z layout’u dzięki float’owi powinien zostać zakończony elementem z clear:both</li>
                         </ul>
                     </section>
@@ -686,10 +686,6 @@
                     </section>
                 </section>
                 <section class="stack">
-                    <style type="text/css">
-                        .green-block { background-color: green; }
-                        .red-block { background-color: red; }
-                    </style>
                     <section>
                         <h1>Flexbox</h1>
                     </section>
@@ -706,20 +702,6 @@
                     </section>
                     <section>
                         <h2>Rozmieszczenie elementów w jednym wierszu</h2>
-                        <pre><code>.container {
-    display: flex;
-    flex-flow: row nowrap;
-
-    &__item {
-        flex: 0 1 auto;
-        &--expandable {
-            flex-grow: 1;
-        }
-        &--expander {
-            flex-grow: 5;
-        }
-    }
-}</code></pre>
                         <style type="text/css">
                             .flex-example--1.container {
                                 display: flex;
@@ -734,28 +716,39 @@
                             }
                             .flex-example--1 .container__item--expander {
                                 flex-grow: 5;
+                                background-color: rgba(255,255,255,.2);
+                            }
+                            .flex-example--1 .green-block {
+                                background-color: rgba(0,255,0,.2);
+                            }
+                            .flex-example--1 .red-block {
+                                background-color: rgba(255,0,0,.8);
+                                min-width: 30px;
                             }
                         </style>
                         <div class="flex-example--1 container">
                             <div class="container__item container__item--expandable green-block">Tytuł</div>
-                            <button class="container__item red-block">Przycisk</button>
+                            <button class="container__item">Przycisk</button>
                             <div class="container__item container__item--expander"></div>
                             <div class="container__item red-block">X</div>
                         </div>
-                    </section>
-                    <section>
-                        <h2>Rozmieszczenie elementów w wielu wierszach</h2>
                         <pre><code>.container {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
 
     &__item {
         flex: 0 1 auto;
         &--expandable {
             flex-grow: 1;
         }
+        &--expander {
+            flex-grow: 5;
+        }
     }
 }</code></pre>
+                    </section>
+                    <section>
+                        <h2>Rozmieszczenie elementów w wielu wierszach</h2>
                         <style type="text/css">
                             .flex-example--2.container {
                                 display: flex;
@@ -795,6 +788,17 @@
                             <div class="container__item"></div>
                             <div class="container__item container__item--expandable"></div>
                         </div>
+                        <pre><code>.container {
+    display: flex;
+    flex-flow: row wrap;
+
+    &__item {
+        flex: 0 1 auto;
+        &--expandable {
+            flex-grow: 1;
+        }
+    }
+}</code></pre>
                     </section>
                     <section>
                         <h2>Właściwości kontenera</h2>
@@ -803,8 +807,8 @@
                             <li>flex-direction: row | row-reverse | column | column-reverse;</li>
                             <li>flex-wrap: nowrap | wrap | wrap-reverse;</li>
                             <li>flex-flow: flex-direction flex-wrap</li>
-                            <li></li>
-                            <li>align-content: flex-start | flex-end | center | space-between | space-around | stretch;</li>
+                            
+                            <li style="margin-top: 50px">align-content: flex-start | flex-end | center | space-between | space-around | stretch;</li>
                             <li>align-items: flex-start | flex-end | center | baseline | stretch;</li>
                             <li>justify-content: flex-start | flex-end | center | space-between | space-around | space-evenly;</li>
                         </ul>
@@ -816,8 +820,8 @@
                             <li>flex-shrink: liczba;</li>
                             <li>flex-basis: długość | auto;</li>
                             <li>flex: flex-grow flex-shrink flex-basis</li>
-                            <li></li>
-                            <li>align-self: auto | flex-start | flex-end | center | baseline | stretch;</li>
+
+                            <li style="margin-top: 50px">align-self: auto | flex-start | flex-end | center | baseline | stretch;</li>
                             <li>order: liczba;</li>
                         </ul>
                     </section>
@@ -879,6 +883,10 @@
                                 height: 200px;
                                 margin: 0 10%;
                             }
+                            .grid-example--1.container--dashed {
+                                padding: 10px;
+                                border: 3px dashed;
+                            }
                             .grid-example--1 .box {
                                 background-color: green;
                                 height: 100%;
@@ -909,7 +917,7 @@
                         </div>
                     </section>
                     <section>
-                        <h2>Rozwiązanie - CSS Flexbox (layout-in)</h2>
+                        <h2>Rozwiązanie - CSS Flexbox (layout-out)</h2>
                         <style type="text/css">
                             .flex-example--3.container, .flex-example--3 .container {
                                 display: flex;
@@ -956,7 +964,7 @@
                         </div>
                     </section>
                     <section>
-                        <h2>Rozwiązanie - CSS Flexbox (layout-in)</h2>
+                        <h2>Rozwiązanie - CSS Flexbox (layout-out)</h2>
                         <pre><code><div class="container">
     <div class="container container--left">
         <div class="box"></div>
@@ -975,14 +983,14 @@
                     </section>
                     <section>
                         <h2>Rozwiązanie - CSS GRID (layout-in)</h2>
-                        <div class="container">
+                        <div class="grid-example--1 container container--dashed">
                             <div class="box box--left"></div>
                             <div class="box box--top-right-1"></div>
                             <div class="box box--top-right-2"></div>
                             <div class="box box--bottom-right-1"></div>
                             <div class="box box--bottom-right-2"></div>
                         </div>
-                        <pre><code><div class="grid-example--1 container">
+                        <pre><code><div class="container">
     <div class="box box--left"></div>
     <div class="box box--top-right-1"></div>
     <div class="box box--top-right-2"></div>
@@ -1002,8 +1010,8 @@
                             <li>grid-template-rows: [nazwa] wysokość-wiersza [nazwa] wysokość-wiersza ...</li>
                             <li>grid-template: grid-template-rows / grid-template-columns</li>
                             <li>grid-template-areas: "nazwa | .  nazwa | . " "...</li>
-                            <li></li>
-                            <li>grid-auto-columns: szerokość_kolumn</li>
+                            
+                            <li style="margin-top: 50px">grid-auto-columns: szerokość_kolumn</li>
                             <li>grid-auto-rows: wysokość wierszy</li>
                             <li>grid-auto-flow: row | column | row dense | column dense</li>
                         </ul>
@@ -1069,8 +1077,7 @@ grid-template-areas:
 }
 .content {
     grid-row: content-start / content-end;
-    grid-column: one-third / end;
-    background-color: rgba(255,0,255, .4)   
+    grid-column: one-third / end;  
 }</code></pre>
                     </section>
                     <section>

@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "http-server"
+    "start": "browser-sync start --server --files \"code\" --port 8080"
   },
   "author": "Tadeusz Makuch",
   "license": "MIT",
   "devDependencies": {
-    "http-server": "^0.10.0"
+    "browser-sync": "^2.18.13"
   }
 }
