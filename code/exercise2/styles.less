@@ -1,0 +1,42 @@
+.layout() {
+    .paragraph(@indent: 20px) {
+        text-indent: @indent;
+    }
+    .box(@padding, @bgColor: initial) {
+        padding: @padding;
+        background-color: @bgColor
+    }
+    .header() {
+        > .header_subheader {
+            color: white;
+        }
+    }
+}
+.theme() {
+    .highlighted() {
+        color: blue;
+    }
+}
+
+.header {
+    .layout.box(10px, fade(blue, 50%));
+    .layout.header;
+}
+
+.content {
+    padding: 10px;
+
+    .paragraph {
+        .layout.paragraph;
+    }
+
+    .important-paragraph {
+        .layout.paragraph(40px);
+        .theme.highlighted();
+    }
+}
+
+footer.important {
+    .layout.box(10px);
+    .theme.highlighted;
+}

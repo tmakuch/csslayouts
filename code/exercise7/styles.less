@@ -1,0 +1,49 @@
+.container {
+    height: 100%;
+    width: 100%;
+
+    .layout.flex(column);
+
+    .row {
+        .layout.flex;
+
+        &.top {
+            flex: 1 1;
+            
+            .left {
+                flex: 2 2 100px;    
+            }
+
+            .center {
+                flex: 1 1 100px;
+            }
+
+            .right {
+                flex: 0 0 150px;
+            }
+        }
+
+        &.bottom {
+            flex: 1 1;
+            
+            .left {
+                flex: 0 0 150px;
+            }
+            
+            .center {
+                flex: 1 1;
+            }
+
+            .right {
+                flex: 0 0 50%;
+            }
+        }
+    }
+}
+
+.layout() {
+    .flex(@direction: row) {
+        display: flex;
+        flex-flow: @direction nowrap;
+    }
+}

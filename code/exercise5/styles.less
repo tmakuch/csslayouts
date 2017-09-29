@@ -1,0 +1,23 @@
+p {
+    &:first-of-type {
+        color: green;
+    }
+    &:last-of-type:not(:first-of-type) {
+        text-decoration: line-through;
+    }
+    &:hover {
+        color: red;
+    }
+}
+
+input {
+    &:required {
+        border-color: green;
+    }
+    &:invalid {
+        border-color: red;
+        &:optional {
+            background-color: red;
+        }
+    }
+}

@@ -1,0 +1,56 @@
+.header {
+    position: relative;
+    padding: 10px 50px;
+
+    &::after {
+        content: ' ';
+        position: absolute;
+        bottom: 5px;
+        left: 30px;
+        right: 30px;
+        border-bottom: 5px dashed black;
+    }
+}
+
+.content {
+    &__item {
+        position: relative;
+        padding: 0 30px;
+
+        &::before {
+            content: "„";
+            position: absolute;
+            left: 5px;
+            font-size: 36px;
+        }
+
+        &::after {
+            content: "”";
+            position: absolute;
+            right: 5px;
+            font-size: 36px;
+        }
+
+        &::first-letter {
+            font-size: 2.8em;
+            float: left;
+        }
+
+        &--important::selection {
+            background-color: pink;
+        }
+    }
+} 
+
+.footer {
+    position: relative;
+
+    &::before {
+        content: ' ';
+        position: absolute;
+        top: -5px;
+        left: 30px;
+        right: 30px;
+        border-bottom: 5px dashed black;
+    }
+}
